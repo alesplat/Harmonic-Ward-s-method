@@ -1,6 +1,4 @@
-#################################################################
-#################################################################
-#################################################################
+
 #################################################################
 #https://www.kaggle.com/datasets/andyesi/2019-ironman-world-championship-results
 # Scale the values da 1 a 2
@@ -27,7 +25,6 @@ library(plyr) #to use revalue
 df <- read.csv("C:/Users/xseri/Downloads/2019 Ironman World Championship Results.csv", header=TRUE)
 df <- df[, 5:8]
 df <- df[df$Division == "MPRO" |  df$Division == "F35-39"| df$Division == "M70-74", ]
-#df <- na.omit(df)  #for simplicity, remove rows of people that didn't complete the race
 df <- df[-which(df$Swim == "" | df$Bike == "" | df$Run == ""), ] #for simplicity, remove rows of people that didn't complete the race
 df$Swim <- period_to_seconds(hms(df$Swim))
 df$Swim <- as.numeric(df$Swim)
@@ -41,14 +38,12 @@ df$Run <- 42195/df$Run      #speed of each person in marathon in m/s
 colnames(df) <- c('Division', 'Swim_speed', 'Bike_speed', 'Marathon_speed')
 rownames(df) <- NULL
 
-#da usare se uso 2 metodo
 df_cl <- df[, 2:ncol(df)]
 df_cl_scaled <- scale_x(df_cl)
 df_cl_h <- harmonic_scale(df_cl_scaled)
 
 
-#2° metodo passando gia i dati convertiti in 1/x
-#hc = perform_clustering(df_cl_h, num_clusters = 4)
+
 hc = hclust.vector(df_cl_h, method='ward')  #è il ward.D2
 plot(hc)
 NbClust(data = df_cl_h, min.nc = 2, max.nc = 6, method = "ward.D2")
@@ -81,10 +76,6 @@ legend("right", legend = levels(ggData$cluster),col = colors, pch = 16, cex = 0.
         title = "Division", box.col = "white")
 
 
-# Create a confusion matrix
-#df$Division[df$Division == "MPRO"] <- "1"
-#df$Division[df$Division == "F35-39"] <- "2"
-#df$Division[df$Division == "M70-74"] <- "3"
 df$Division <- as.factor(df$Division)
 conf_matrix <- confusionMatrix(ggData$cluster, df$Division)
 conf_matrix
@@ -158,8 +149,5 @@ c_error
 
 
 
-###################################################################
-###################################################################
-###################################################################
-###################################################################
+
 ###################################################################
